@@ -1,0 +1,55 @@
+﻿<!-- Thêm thư viện & thay đổi mô hình để sử dụng thư viện phân trang -->
+@using PagedList.Mvc;
+@model PagedList.IPagedList<lapTrinhWebTH.Models.Product>
+@{
+    ViewBag.Title = "ProductList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <h2>MUA HÀNG</h2>
+    <div style="border: 3px solid #ff6a00; height: 70px; text-align: center; padding: 15px;">
+        <!-- Đoạn thêm -->
+        @using (Html.BeginForm("ProductList", "Products", FormMethod.Get))
+        {
+            <table>
+                <tr>
+                    <td>
+                        Tên Sản phẩm : <input type="text" name="SearchString" />
+                        <input type="submit" value="Tìm kiếm" class="btn btn-warning" />
+                    </td>
+                    <td>
+                        Đơn giá từ : <input type="number" name="min" />
+                        --đến : <input type="number" name="max" />
+                        <input type="submit" value="Tìm giá" class="btn btn-warning" />
+                    </td>
+                </tr>
+            </table>
+        }
+        <!--Kết thúc -->
+    </div>
+    <div class="row">
+        @foreach (var pro in Model)
+        {
+            <div class="col-sm-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card-pro">
+                    <img src="~/Content/images/@pro.ProductImage" width="200" height="200" />
+                    <p>@Html.DisplayFor(model => pro.ProductName)</p>
+                    <p>Đơn giá : <font color="red">@Html.DisplayFor(model => pro.ProductPrice)</font></p>
+                    <p style="text-align: center;">
+                        <a class="btn btn-info" href="/Products/Details/@pro.ProductID"> Chi tiết </a>
+                        <a href="/ShoppingCart/AddToCart/@pro.ProductID" class="btn btn-danger"> Mua </a>                    </p>
+                </div>
+            </div>
+        }
+    </div>
+    <div>
+        <div>
+            <!-- Thêm đoạn mã để hiển thị số trang và số trang hiện tại -->
+            Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+        </div>
+        <div>
+            <!--Control PagedListPager: mô tả mô hình với số trang là liên kết với tham số "Index" và tham số page-->
+            @Html.PagedListPager(Model, page => Url.Action("ProductList", new { page }))
+        </div>
+    </div>
+</div>
